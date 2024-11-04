@@ -27,12 +27,17 @@ export default function Component(): JSX.Element {
   const [data, setData] = useState({ labels: [], data: [] });
   const [loading, setLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [deviceId, setDeviceId] = useState("");
   const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const storedDeviceId = localStorage.getItem("deviceId");
     if (!token) router.push("/login");
-    else setIsLoggedIn(true);
+    else {
+      setIsLoggedIn(true);
+      if (storedDeviceId) setDeviceId(storedDeviceId);
+    }
   }, [router]);
 
   useEffect(() => {
@@ -47,7 +52,7 @@ export default function Component(): JSX.Element {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              deviceId: "1100000571",
+              deviceId: deviceId,
               timeFilter,
               targetDate: format(date, "yyyy-MM-dd"),
             }),
@@ -63,7 +68,7 @@ export default function Component(): JSX.Element {
         setLoading(false);
       }
     })();
-  }, [timeFilter, date]);
+  }, [timeFilter, date, deviceId]);
 
   const chartData =
     data.labels?.map((label, index) => ({
@@ -132,7 +137,7 @@ export default function Component(): JSX.Element {
         {/* Header with Navigation */}
         <div className="mb-6 flex justify-between items-center">
           <h1 className="text-2xl font-semibold text-blue-900">
-            Water Usage Dashboard
+            DeviceId: {deviceId}
           </h1>
           {isLoggedIn && (
             <motion.div
@@ -279,7 +284,7 @@ export default function Component(): JSX.Element {
                 <div className="space-y-2">
                   <label className="text-sm font-medium flex items-center gap-2">
                     <CalendarDays className="h-4 w-4" />
-                    Select Date
+                    Select
                   </label>
                   <motion.div whileHover={{ scale: 1.02 }}>
                     {renderDateSelector()}
