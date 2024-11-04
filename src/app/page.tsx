@@ -3,13 +3,7 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   LineChart,
@@ -22,12 +16,19 @@ import {
 } from "recharts";
 import { Droplet, CalendarDays } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function Component(): JSX.Element {
   const [timeFilter, setTimeFilter] = useState("day");
   const [date, setDate] = useState(new Date());
   const [data, setData] = useState({ labels: [], data: [] });
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) router.push("/login");
+  }, [router]);
 
   useEffect(() => {
     (async () => {
@@ -66,16 +67,16 @@ export default function Component(): JSX.Element {
     })) || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-4 md:p-8 overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-4 md:p-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="max-w-7xl mx-auto space-y-8"
       >
         <Card className="backdrop-blur-md bg-white/90 shadow-xl">
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <div className="lg:col-span-2 space-y-4">
+          <CardContent className="space-y-6 p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-6">
                 <motion.div whileHover={{ scale: 1.02 }} className="space-y-2">
                   <label className="text-sm font-medium">Time Range</label>
                   <Tabs
@@ -179,18 +180,20 @@ export default function Component(): JSX.Element {
                 </AnimatePresence>
               </div>
 
-              <motion.div whileHover={{ scale: 1.02 }} className="space-y-2">
+              <div className="space-y-2">
                 <label className="text-sm font-medium flex items-center gap-2">
                   <CalendarDays className="h-4 w-4" />
                   Select Date
                 </label>
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={(date) => date && setDate(date)}
-                  className="rounded-md border"
-                />
-              </motion.div>
+                <motion.div whileHover={{ scale: 1.02 }}>
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={(newDate) => newDate && setDate(newDate)}
+                    className="rounded-md border bg-white"
+                  />
+                </motion.div>
+              </div>
             </div>
 
             <motion.div
