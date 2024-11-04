@@ -92,11 +92,13 @@ export default function Component(): JSX.Element {
               <SelectValue placeholder="Select month" />
             </SelectTrigger>
             <SelectContent>
-              {Array.from({ length: 12 }, (_, i) => (
-                <SelectItem key={i} value={i.toString()}>
-                  {format(new Date(2000, i, 1), "MMMM")}
-                </SelectItem>
-              ))}
+              <div className="max-h-[200px] overflow-y-auto">
+                {Array.from({ length: 12 }, (_, i) => (
+                  <SelectItem key={i} value={i.toString()}>
+                    {format(new Date(2000, i, 1), "MMMM")}
+                  </SelectItem>
+                ))}
+              </div>
             </SelectContent>
           </Select>
         );
