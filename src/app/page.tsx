@@ -19,6 +19,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function Component(): JSX.Element {
   const [timeFilter, setTimeFilter] = useState("day");
@@ -69,6 +70,59 @@ export default function Component(): JSX.Element {
       name: label,
       value: data.data[index],
     })) || [];
+
+  const renderDateSelector = () => {
+    switch (timeFilter) {
+      case "day":
+        return (
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={(newDate) => newDate && setDate(newDate)}
+            className="rounded-md border bg-white"
+          />
+        );
+      case "month":
+        return (
+          <Select
+            value={date.getMonth().toString()}
+            onValueChange={(value) => setDate(new Date(date.getFullYear(), parseInt(value), 1))}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select month" />
+            </SelectTrigger>
+            <SelectContent>
+              {Array.from({ length: 12 }, (_, i) => (
+                <SelectItem key={i} value={i.toString()}>
+                  {format(new Date(2000, i, 1), "MMMM")}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        );
+      case "year":
+        return (
+          <Select
+            value={date.getFullYear().toString()}
+            onValueChange={(value) => setDate(new Date(parseInt(value), 0, 1))}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select year" />
+            </SelectTrigger>
+            <SelectContent>
+              {[0, 1, 2].map((yearOffset) => {
+                const year = new Date().getFullYear() - yearOffset;
+                return (
+                  <SelectItem key={year} value={year.toString()}>
+                    {year}
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
+        );
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-4 md:p-8">
@@ -226,12 +280,7 @@ export default function Component(): JSX.Element {
                     Select Date
                   </label>
                   <motion.div whileHover={{ scale: 1.02 }}>
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={(newDate) => newDate && setDate(newDate)}
-                      className="rounded-md border bg-white"
-                    />
+                    {renderDateSelector()}
                   </motion.div>
                 </div>
               </div>
