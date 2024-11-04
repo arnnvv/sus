@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,20 +10,14 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Icons } from "@/components/ui/icons";
 
 export default function LoginPage(): JSX.Element {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-
-  const token = localStorage.getItem("token");
-  if (token) router.push("/");
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
@@ -40,7 +35,6 @@ export default function LoginPage(): JSX.Element {
             onSubmit={async (event: FormEvent<HTMLFormElement>) => {
               event.preventDefault();
               setLoading(true);
-              setError(null);
 
               const formData = new FormData(event.currentTarget);
               const deviceId = formData.get("deviceId") as string;
@@ -64,33 +58,42 @@ export default function LoginPage(): JSX.Element {
                   localStorage.setItem("token", result.jwt);
                   localStorage.setItem("deviceId", deviceId);
                   localStorage.setItem("initialPin", initialPin);
+                  toast.success("Login successful");
                   router.push("/");
                 } else {
-                  setError(result.error || "Login failed. Please try again.");
+                  toast.error(
+                    result.error || "Login failed. Please try again.",
+                  );
                 }
               } catch (error) {
-                setError("An error occurred. Please try again later.");
+                toast.error("An error occurred. Please try again later.");
               } finally {
                 setLoading(false);
               }
             }}
+            className="space-y-4"
           >
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="deviceId">Device ID</Label>
-                <Input id="deviceId" name="deviceId" type="text" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="initialPin">Device PIN</Label>
-                <Input
-                  id="initialPin"
-                  name="initialPin"
-                  type="password"
-                  required
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="deviceId">Device ID</Label>
+              <Input
+                id="deviceId"
+                name="deviceId"
+                type="text"
+                placeholder="deviceId"
+                required
+              />
             </div>
-            <Button className="w-full mt-6" type="submit" disabled={loading}>
+            <div className="space-y-2">
+              <Label htmlFor="initialPin">Device PIN</Label>
+              <Input
+                id="initialPin"
+                name="initialPin"
+                type="password"
+                placeholder="****"
+                required
+              />
+            </div>
+            <Button className="w-full" type="submit" disabled={loading}>
               {loading && (
                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
               )}
@@ -98,14 +101,6 @@ export default function LoginPage(): JSX.Element {
             </Button>
           </form>
         </CardContent>
-        <CardFooter>
-          {error && (
-            <Alert variant="destructive">
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-        </CardFooter>
       </Card>
     </div>
   );
