@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-//import { format } from 'date-fns';
+import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Card,
@@ -42,8 +42,8 @@ export default () => {
             },
             body: JSON.stringify({
               deviceId: "1100000571",
-              timeFilter: "day",
-              targetDate: "2024-10-28",
+              timeFilter,
+              targetDate: format(date, "yyyy-MM-dd"),
             }),
           },
         );
