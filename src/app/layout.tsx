@@ -20,8 +20,9 @@ export default ({
   children: ReactNode;
 }>) => (
   <html lang="en">
-    <body className={inter.variable}>{children}
-              <Toaster richColors />
+    <body className={inter.variable}>
+      {children}
+      <Toaster richColors />
     </body>
   </html>
 );

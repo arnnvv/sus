@@ -19,7 +19,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function Component(): JSX.Element {
   const [timeFilter, setTimeFilter] = useState("day");
@@ -91,7 +97,9 @@ export default function Component(): JSX.Element {
         return (
           <Select
             value={date.getMonth().toString()}
-            onValueChange={(value) => setDate(new Date(date.getFullYear(), parseInt(value), 1))}
+            onValueChange={(value) =>
+              setDate(new Date(date.getFullYear(), parseInt(value), 1))
+            }
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select month" />
