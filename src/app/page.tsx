@@ -357,7 +357,9 @@ export default function Component(): JSX.Element {
                 animate={{ opacity: 1, y: 0 }}
                 className="mt-8"
               >
-                <h2 className="text-xl font-semibold mb-4 text-blue-900">Status History</h2>
+                <h2 className="text-xl font-semibold mb-4 text-blue-900">
+                  Status History
+                </h2>
                 <div className="bg-white rounded-lg shadow-md p-4 max-h-60 overflow-y-auto">
                   {statusData.length > 0 ? (
                     statusData.map((status, index) => (
@@ -370,12 +372,17 @@ export default function Component(): JSX.Element {
                           <span className="font-medium">{status.status}</span>
                         </div>
                         <span className="text-sm text-gray-500">
-                          {format(new Date(status.dateTime), "MMM d, yyyy HH:mm")}
+                          {format(
+                            new Date(status.dateTime),
+                            "MMM d, yyyy HH:mm",
+                          )}
                         </span>
                       </div>
                     ))
                   ) : (
-                    <div className="text-center text-gray-500">No status data available</div>
+                    <div className="text-center text-gray-500">
+                      No status data available
+                    </div>
                   )}
                 </div>
               </motion.div>
