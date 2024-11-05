@@ -14,7 +14,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Droplet, CalendarDays, LogOut } from "lucide-react";
+import { Droplet, CalendarDays, LogOut, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -27,6 +27,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface StatusData {
+  dateTime: string;
+  status: string;
+  timestamp: number;
+}
+
 export default function Component(): JSX.Element {
   const [timeFilter, setTimeFilter] = useState("day");
   const [date, setDate] = useState(new Date());
@@ -34,6 +40,7 @@ export default function Component(): JSX.Element {
   const [loading, setLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [deviceId, setDeviceId] = useState("");
+  const [statusData, setStatusData] = useState<StatusData[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -50,26 +57,35 @@ export default function Component(): JSX.Element {
     (async () => {
       setLoading(true);
       try {
-        const response = await fetch(
-          "https://localhost:8443/newWaterReading2/latest",
-          {
+        const [waterResponse, statusResponse] = await Promise.all([
+          fetch("https://localhost:8443/newWaterReading2/latest", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               deviceId: deviceId,
               timeFilter,
               targetDate: format(date, "yyyy-MM-dd"),
             }),
-          },
-        );
+          }),
+          fetch("https://localhost:8443/newWaterReading2/toast", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ deviceId: deviceId }),
+          }),
+        ]);
 
-        if (!response.ok) throw new Error("Failed to fetch data");
-        const result = await response.json();
-        setData(result);
+        if (!waterResponse.ok || !statusResponse.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const waterResult = await waterResponse.json();
+        const statusResult = await statusResponse.json();
+
+        setData(waterResult);
+        setStatusData(statusResult);
       } catch (error) {
         console.error("Error fetching data:", error);
+        toast.error("Failed to fetch data");
       } finally {
         setLoading(false);
       }
@@ -333,6 +349,35 @@ export default function Component(): JSX.Element {
                     </div>
                   </CardContent>
                 </Card>
+              </motion.div>
+
+              {/* New Status Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-8"
+              >
+                <h2 className="text-xl font-semibold mb-4 text-blue-900">Status History</h2>
+                <div className="bg-white rounded-lg shadow-md p-4 max-h-60 overflow-y-auto">
+                  {statusData.length > 0 ? (
+                    statusData.map((status, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between py-2 border-b last:border-b-0"
+                      >
+                        <div className="flex items-center">
+                          <AlertCircle className="h-5 w-5 text-blue-500 mr-2" />
+                          <span className="font-medium">{status.status}</span>
+                        </div>
+                        <span className="text-sm text-gray-500">
+                          {format(new Date(status.dateTime), "MMM d, yyyy HH:mm")}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center text-gray-500">No status data available</div>
+                  )}
+                </div>
               </motion.div>
             </CardContent>
           </Card>
