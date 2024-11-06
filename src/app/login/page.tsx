@@ -83,7 +83,7 @@ export default function LoginPage(): JSX.Element {
                           "Content-Type": "application/json",
                         },
                         body: JSON.stringify({ deviceId, initialPin }),
-                      }
+                      },
                     );
                     const result = await response.json();
                     if (result.jwt) {
@@ -93,7 +93,9 @@ export default function LoginPage(): JSX.Element {
                       toast.success("Login successful");
                       router.push("/");
                     } else {
-                      toast.error(result.error || "Login failed. Please try again.");
+                      toast.error(
+                        result.error || "Login failed. Please try again.",
+                      );
                     }
                   } catch (error) {
                     toast.error("An error occurred. Please try again later.");
@@ -138,4 +140,3 @@ export default function LoginPage(): JSX.Element {
     </div>
   );
 }
-
