@@ -45,7 +45,7 @@ export default function LoginPage(): JSX.Element {
 
               try {
                 const response = await fetch(
-                  "https://ec2-35-154-80-88.ap-south-1.compute.amazonaws.com:8081/device/deviceLogin",
+                  "https://ec2-35-154-73-2.ap-south-1.compute.amazonaws.com:8081/device/deviceLogin",
                   {
                     method: "POST",
                     headers: {

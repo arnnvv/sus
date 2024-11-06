@@ -58,7 +58,7 @@ export default function Component(): JSX.Element {
       setLoading(true);
       try {
         const [waterResponse, statusResponse] = await Promise.all([
-          fetch("https://ec2-35-154-80-88.ap-south-1.compute.amazonaws.com:8081/newWaterReading2/latest", {
+          fetch("https://ec2-35-154-73-2.ap-south-1.compute.amazonaws.com:8081/newWaterReading2/latest", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -67,7 +67,7 @@ export default function Component(): JSX.Element {
               targetDate: format(date, "yyyy-MM-dd"),
             }),
           }),
-          fetch("https://ec2-35-154-80-88.ap-south-1.compute.amazonaws.com:8081/newWaterReading2/toast", {
+          fetch("https://ec2-35-154-73-2.ap-south-1.compute.amazonaws.com:8081/newWaterReading2/toast", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ deviceId: deviceId }),
