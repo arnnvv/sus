@@ -76,7 +76,7 @@ export default function LoginPage(): JSX.Element {
                   const initialPin = formData.get("initialPin") as string;
                   try {
                     const response = await fetch(
-                      "https://ec2-35-154-73-2.ap-south-1.compute.amazonaws.com:8081/device/deviceLogin",
+                      "https://wifiapi.sustainico.in/device/deviceLogin",
                       {
                         method: "POST",
                         headers: {
